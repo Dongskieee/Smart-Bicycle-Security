@@ -11,7 +11,6 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 - Flutter  
 - Dart  
 - Internet of Things (IoT)  
-- Cloud Computing  
 
 ---
 
@@ -38,11 +37,6 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 2. Sign in or create an account  
 3. Pair the app with the IoT device  
 4. Enable notifications  
-
-### Cloud Setup
-1. Configure the cloud database and IoT platform  
-2. Connect the IoT device to the cloud  
-3. Enable real-time data sync
 
 ## Contributors
 - rcpinca.it@tip.edu.ph
