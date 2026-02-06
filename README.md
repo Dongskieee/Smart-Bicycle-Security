@@ -42,4 +42,8 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 ### Cloud Setup
 1. Configure the cloud database and IoT platform  
 2. Connect the IoT device to the cloud  
-3. Enable real-time data sync  
+3. Enable real-time data sync
+
+## 👥 Contributors
+- **Mr. Ryan Pinca** — rcpinca.it@tip.edu.ph
+
