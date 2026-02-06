@@ -1,63 +1,45 @@
-# Smart-Bicycle-Security
+#Smart Bicycle Security
 
-Desctiption:
-The Bicycle Security is an IoT-based system designed to help deter bicycle theft in neighborhoods. It uses a vibration/tilt sensor to detect unauthorized movement or tampering. When suspicious activity is detected, the system immediately sends an alert to the owner’s phone through mobile notification. This solution is particularly useful in the Philippines, where bicycles are a common mode of transportation and theft can occur frequently.
+##Description
+Smart Bicycle Security is an IoT-based system designed to help deter bicycle theft in neighborhoods. It uses a vibration and tilt sensor to detect unauthorized movement or tampering. When suspicious activity is detected, the system immediately sends an alert to the owner’s phone through mobile notification.
 
+This solution is especially useful in the Philippines, where bicycles are a common mode of transportation and theft can occur frequently.
 
-Technologies Used:
-Flutter
+---
 
-Dart
+##Technologies Used
+- Flutter  
+- Dart  
+- Internet of Things (IoT)  
+- Cloud Computing  
 
-Internet of Things (IoT)
+---
 
-Cloud Computing
+##Features
+- **Vibration and Tilt Detection** – Detects unauthorized movement or tampering  
+- **Mobile Alert Notifications** – Sends instant alerts to the user’s phone  
+- **Status Indicators**
+  - 🟢 Green – Safe  
+  - 🔴 Red – Moving or tampered  
+- **Portable and Low-Power Design** – Compact and battery-powered  
 
+---
 
-Features:
-Vibration and Tilt Detection
-Detects any unauthorized movement or tampering of the bicycle.
+##Installation Instructions
 
-Mobile Alert Notifications
-Sends instant notifications to the user’s phone when movement is detected.
+###Hardware Setup
+1. Mount the IoT device securely on the bicycle frame  
+2. Connect the vibration and tilt sensors to the microcontroller  
+3. Connect the LED indicators  
+4. Power the device using a battery or power module  
 
-Status Indicators
-LED lights show the bike’s status:
+### Mobile App Setup
+1. Install the Smart Bicycle Security mobile app  
+2. Sign in or create an account  
+3. Pair the app with the IoT device  
+4. Enable notifications  
 
-🟢 Green – Safe
-
-🔴 Red – Moving or tampered
-
-Portable and Low-Power Design
-A compact, battery-powered device that can be easily mounted on a bicycle.
-
-Installation Instructions:
-🔧 Hardware Setup
-
-Mount the IoT device securely on the bicycle frame.
-
-Connect the vibration and tilt sensors to the microcontroller.
-
-Connect the LED indicators.
-
-Power the device using a battery or power module.
-
-📱 Mobile App Setup
-
-Install the Smart Bicycle Security mobile app (Flutter-based).
-
-Sign in or create an account.
-
-Pair the app with the IoT device through the network.
-
-Enable notifications on your phone.
-
-☁ Cloud Setup
-
-Configure the cloud database and IoT platform.
-
-Connect the IoT device to the cloud service.
-
-Ensure real-time data synchronization between the device and the mobile app.
-
-Setup:
+###Cloud Setup
+1. Configure the cloud database and IoT platform  
+2. Connect the IoT device to the cloud  
+3. Enable real-time data sync  
