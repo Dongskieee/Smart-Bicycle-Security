@@ -44,6 +44,6 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 2. Connect the IoT device to the cloud  
 3. Enable real-time data sync
 
-## 👥 Contributors
+## Contributors
 - **Mr. Ryan Pinca** — rcpinca.it@tip.edu.ph
 
