@@ -45,5 +45,5 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 3. Enable real-time data sync
 
 ## Contributors
-- **Mr. Ryan Pinca** — rcpinca.it@tip.edu.ph
+- rcpinca.it@tip.edu.ph
 
