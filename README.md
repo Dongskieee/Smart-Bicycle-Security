@@ -1,13 +1,13 @@
-#Smart Bicycle Security
+# Smart Bicycle Security
 
-##Description
+## Description
 Smart Bicycle Security is an IoT-based system designed to help deter bicycle theft in neighborhoods. It uses a vibration and tilt sensor to detect unauthorized movement or tampering. When suspicious activity is detected, the system immediately sends an alert to the owner’s phone through mobile notification.
 
 This solution is especially useful in the Philippines, where bicycles are a common mode of transportation and theft can occur frequently.
 
 ---
 
-##Technologies Used
+## Technologies Used
 - Flutter  
 - Dart  
 - Internet of Things (IoT)  
@@ -15,7 +15,7 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 
 ---
 
-##Features
+## Features
 - **Vibration and Tilt Detection** – Detects unauthorized movement or tampering  
 - **Mobile Alert Notifications** – Sends instant alerts to the user’s phone  
 - **Status Indicators**
@@ -25,9 +25,9 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 
 ---
 
-##Installation Instructions
+## Installation Instructions
 
-###Hardware Setup
+### Hardware Setup
 1. Mount the IoT device securely on the bicycle frame  
 2. Connect the vibration and tilt sensors to the microcontroller  
 3. Connect the LED indicators  
@@ -39,7 +39,7 @@ This solution is especially useful in the Philippines, where bicycles are a comm
 3. Pair the app with the IoT device  
 4. Enable notifications  
 
-###Cloud Setup
+### Cloud Setup
 1. Configure the cloud database and IoT platform  
 2. Connect the IoT device to the cloud  
 3. Enable real-time data sync  
