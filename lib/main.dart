@@ -1,7 +1,144 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() {
   runApp(const PedalPatrolApp());
+}
+
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _obscure = true;
+  bool _isLoading = false;
+
+  Future<void> _createAccount() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final email = emailController.text.trim().toLowerCase();
+    final password = passwordController.text.trim();
+
+    setState(() => _isLoading = true);
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('registered_email', email);
+    await prefs.setString('registered_password', password);
+
+    setState(() => _isLoading = false);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account created successfully')),
+    );
+
+    // Navigate to home
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const PedalPatrolHome()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF4A90E2), Color(0xFF50C9CE)],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.person_add, size: 64, color: Colors.blue),
+                      const SizedBox(height: 12),
+                      const Text('Create Account', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 20),
+
+                      TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(prefixIcon: Icon(Icons.email), labelText: 'Email', border: OutlineInputBorder()),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return 'Email is required';
+                          if (!v.contains('@')) return 'Enter a valid email';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: _obscure,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility), onPressed: () => setState(() => _obscure = !_obscure)),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return 'Password is required';
+                          if (v.length < 4) return 'Password too short';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+
+                      TextFormField(
+                        controller: confirmController,
+                        obscureText: _obscure,
+                        decoration: const InputDecoration(prefixIcon: Icon(Icons.lock_outline), labelText: 'Confirm Password', border: OutlineInputBorder()),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return 'Please confirm your password';
+                          if (v != passwordController.text) return 'Passwords do not match';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 18),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : _createAccount,
+                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                          child: _isLoading ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Create Account'),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Back to Login')),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class PedalPatrolApp extends StatelessWidget {
@@ -9,9 +146,25 @@ class PedalPatrolApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(), // 👈 Start with login
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: false,
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey.shade50,
+        appBarTheme: const AppBarTheme(elevation: 2, backgroundColor: Colors.white, foregroundColor: Colors.black),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ),
+      home: const LoginScreen(), // 👈 Start with login
     );
   }
 }
@@ -26,9 +179,21 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _obscure = true;
+  bool _isLoading = false;
 
   void loginUser() {
-    String email = emailController.text.trim();
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    setState(() => _isLoading = true);
+    _attemptLogin().whenComplete(() {
+      if (mounted) setState(() => _isLoading = false);
+    });
+  }
+
+  Future<void> _attemptLogin() async {
+    String email = emailController.text.trim().toLowerCase();
     String password = passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
@@ -38,12 +203,27 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    if (email == "cyclist@gmail.com" && password == "123456") {
+    final prefs = await SharedPreferences.getInstance();
+    final storedEmail = prefs.getString('registered_email');
+    final storedPassword = prefs.getString('registered_password');
+
+    if (storedEmail == null || storedPassword == null) {
+      // No account exists yet — force the user to create one first.
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No account found. Please create one.")),
+      );
+      // Navigate to signup screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SignupScreen()),
+      );
+      return;
+    }
+
+    if (email == storedEmail && password == storedPassword) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const PedalPatrolHome(),
-        ),
+        MaterialPageRoute(builder: (context) => const PedalPatrolHome()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -51,47 +231,104 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "Cyclist Login",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 30),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF4A90E2), Color(0xFF50C9CE)],
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // logo / title
+                      const Icon(Icons.directions_bike, size: 64, color: Colors.blue),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'Cyclist Login',
+                        style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 20),
 
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: "Email",
-                border: OutlineInputBorder(),
+                      TextFormField(
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return 'Email is required';
+                          if (!v.contains('@')) return 'Enter a valid email';
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 12),
+
+                      TextFormField(
+                        controller: passwordController,
+                        obscureText: _obscure,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.lock),
+                          labelText: 'Password',
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
+                            onPressed: () => setState(() => _obscure = !_obscure),
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.trim().isEmpty) return 'Password is required';
+                          if (v.length < 4) return 'Password too short';
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 18),
+
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _isLoading ? null : loginUser,
+                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+                          child: _isLoading ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Login'),
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account?"),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (c) => const SignupScreen()));
+                            },
+                            child: const Text('Create account'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
-
-            const SizedBox(height: 15),
-
-            TextField(
-              controller: passwordController,
-              obscureText: true,
-              decoration: const InputDecoration(
-                labelText: "Password",
-                border: OutlineInputBorder(),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: loginUser,
-              child: const Text("Login"),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -99,20 +336,278 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 
-class Header extends StatelessWidget {
+class Header extends StatefulWidget {
   const Header({super.key});
 
   @override
+  State<Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
+  String _name = '';
+  String? _avatarPath;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('registered_name') ?? '';
+      _avatarPath = prefs.getString('registered_avatar');
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        Text(
-          "PedalPatrol",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+    final primary = Theme.of(context).colorScheme.primary;
+    return Row(
+      children: [
+        _avatarPath != null && _avatarPath!.isNotEmpty
+            ? CircleAvatar(radius: 20, backgroundImage: FileImage(File(_avatarPath!)))
+            : Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(color: primary.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
+                child: Icon(Icons.directions_bike, color: primary, size: 28),
+              ),
+        const SizedBox(width: 12),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _name.isNotEmpty ? _name : 'PedalPatrol',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primary),
+            ),
+            const SizedBox(height: 2),
+            Text("Theft Alert System", style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+          ],
         ),
-        Text("Theft Alert System", style: TextStyle(color: Colors.grey)),
       ],
+    );
+  }
+}
+
+/// Account menu shown as a person icon with dropdown options (Settings, Logout)
+class AccountMenu extends StatelessWidget {
+  const AccountMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.person),
+      onSelected: (value) async {
+        if (value == 'logout') {
+          // On logout, return to login and clear navigation stack
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+            (route) => false,
+          );
+        } else if (value == 'profile') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileScreen()),
+          );
+        } else if (value == 'settings') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SettingsScreen()),
+          );
+        }
+      },
+      itemBuilder: (context) => const [
+        PopupMenuItem(value: 'profile', child: Text('Profile')),
+        PopupMenuItem(value: 'settings', child: Text('Settings')),
+        PopupMenuItem(value: 'logout', child: Text('Logout')),
+      ],
+    );
+  }
+}
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  String _email = '';
+  String? _avatarPath;
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _email = prefs.getString('registered_email') ?? '';
+      _nameController.text = prefs.getString('registered_name') ?? '';
+      _phoneController.text = prefs.getString('registered_phone') ?? '';
+      _bioController.text = prefs.getString('registered_bio') ?? '';
+      _avatarPath = prefs.getString('registered_avatar');
+      _loading = false;
+    });
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 800, maxHeight: 800, imageQuality: 85);
+    if (picked == null) return;
+
+    final appDir = await getApplicationDocumentsDirectory();
+    final ext = picked.path.contains('.') ? picked.path.split('.').last : 'jpg';
+    final fileName = 'avatar_${DateTime.now().millisecondsSinceEpoch}.$ext';
+    final saved = await File(picked.path).copy('${appDir.path}/$fileName');
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('registered_avatar', saved.path);
+
+    setState(() {
+      _avatarPath = saved.path;
+    });
+  }
+
+  Future<void> _saveProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('registered_name', _nameController.text.trim());
+    await prefs.setString('registered_phone', _phoneController.text.trim());
+    await prefs.setString('registered_bio', _bioController.text.trim());
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated')));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Profile')),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12),
+                  Text('Email', style: TextStyle(color: Colors.grey.shade700)),
+                  const SizedBox(height: 6),
+                  Text(_email, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        _avatarPath != null && _avatarPath!.isNotEmpty
+                            ? CircleAvatar(radius: 48, backgroundImage: FileImage(File(_avatarPath!)))
+                            : const CircleAvatar(radius: 48, child: Icon(Icons.person, size: 40)),
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: InkWell(
+                            onTap: _pickImage,
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle),
+                              child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text('Display name', style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 6),
+                  TextField(controller: _nameController, decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Your name')),
+                  const SizedBox(height: 12),
+                  const Text('Phone', style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 6),
+                  TextField(controller: _phoneController, decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Phone number'), keyboardType: TextInputType.phone),
+                  const SizedBox(height: 12),
+                  const Text('Bio', style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 6),
+                  TextField(controller: _bioController, decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'A short bio'), maxLines: 3),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      ElevatedButton(onPressed: _saveProfile, child: const Text('Save')),
+                      const SizedBox(width: 12),
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+                    ],
+                  )
+                ],
+              ),
+            ),
+    );
+  }
+}
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
+  Future<void> _deleteAccount(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('registered_email');
+    await prefs.remove('registered_password');
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account deleted.')),
+    );
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+      (route) => false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Settings')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            ListTile(
+              leading: const Icon(Icons.delete_forever, color: Colors.red),
+              title: const Text('Delete account'),
+              subtitle: const Text('Remove stored credentials from this device'),
+              onTap: () async {
+                // confirm
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (c) => AlertDialog(
+                    title: const Text('Delete account?'),
+                    content: const Text('This will remove the stored account from this device.'),
+                    actions: [
+                      TextButton(onPressed: () => Navigator.of(c).pop(false), child: const Text('Cancel')),
+                      TextButton(onPressed: () => Navigator.of(c).pop(true), child: const Text('Delete')),
+                    ],
+                  ),
+                );
+
+                if (confirm == true) {
+                  await _deleteAccount(context);
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -122,39 +617,38 @@ class AlertCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.red.shade200),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.warning, color: Colors.red, size: 30),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text(
-                  "THEFT ALERT!",
-                  style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16),
-                ),
-                Text("Unauthorized movement detected"),
-              ],
+    return Card(
+      elevation: 3,
+      color: Colors.red.shade50,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Icon(Icons.warning, color: Theme.of(context).colorScheme.error, size: 30),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "THEFT ALERT!",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text("Unauthorized movement detected"),
+                ],
+              ),
             ),
-          ),
-          Column(
-            children: const [
-              Icon(Icons.circle, color: Colors.red, size: 14),
-              Text("LED", style: TextStyle(fontSize: 12))
-            ],
-          )
-        ],
+            Column(
+              children: [
+                Icon(Icons.circle, color: Theme.of(context).colorScheme.error, size: 14),
+                const Text("LED", style: TextStyle(fontSize: 12))
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -165,52 +659,51 @@ class LocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Text("Current Location",
-                  style:
-                      TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              const Spacer(),
-              ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.telegram, size: 16),
-                label: const Text("Track"),
-              )
-            ],
-          ),
-          const SizedBox(height: 10),
-          Container(
-            height: 150, // fixed height to avoid unbounded height error
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(12),
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text("Current Location",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                const Spacer(),
+                ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.telegram, size: 16),
+                  label: const Text("Track"),
+                )
+              ],
             ),
-            child: const Center(
-              child: Icon(Icons.location_pin, color: Colors.red, size: 60),
+            const SizedBox(height: 10),
+            Container(
+              height: 150, // fixed height to avoid unbounded height error
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Center(
+                child: Icon(Icons.location_pin, color: Colors.red, size: 60),
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          const Text("Current Location"),
-          const Text("14.599500, 120.984200",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              Text("Latitude\n14.599500"),
-              Text("Longitude\n120.984200"),
-            ],
-          )
-        ],
+            const SizedBox(height: 10),
+            const Text("Current Location"),
+            const Text("14.599500, 120.984200",
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text("Latitude\n14.599500"),
+                Text("Longitude\n120.984200"),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -244,15 +737,17 @@ class _PedalPatrolHomeState extends State<PedalPatrolHome> {
             _currentIndex = index;
           });
         },
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+        backgroundColor: Colors.white,
+        showUnselectedLabels: true,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey.shade600,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.gps_fixed), label: "GPS"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.notifications), label: "Alerts"),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Alerts"),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "History"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.directions_bike), label: "Rides"),
+          BottomNavigationBarItem(icon: Icon(Icons.directions_bike), label: "Rides"),
         ],
       ),
     );
@@ -267,6 +762,10 @@ class GpsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('PedalPatrol'),
+        actions: const [AccountMenu()],
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -292,6 +791,10 @@ class AlertsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('PedalPatrol'),
+        actions: const [AccountMenu()],
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -406,6 +909,10 @@ class HistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('PedalPatrol'),
+        actions: const [AccountMenu()],
+      ),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
@@ -545,6 +1052,10 @@ class RidesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('PedalPatrol'),
+        actions: const [AccountMenu()],
+      ),
       backgroundColor: Colors.grey.shade100,
       body: SafeArea(
         child: Padding(
@@ -641,28 +1152,26 @@ class RideStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 100,
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300),
-        color: Colors.white,
-      ),
-      child: Column(
-        children: [
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            value,
-            style: const TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-        ],
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        width: 100,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -726,21 +1235,39 @@ class RideActivityItem extends StatelessWidget {
 }
 
 
-void loginUser(BuildContext context, String email, String password) {
+void loginUser(BuildContext context, String email, String password) async {
   if (email.isEmpty || password.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Please enter email and password")),
     );
     return;
   }
+  final prefs = await SharedPreferences.getInstance();
+  final storedEmail = prefs.getString('registered_email');
+  final storedPassword = prefs.getString('registered_password');
 
-  // Dummy user validation (replace with API/Firebase later)
-  if (email == "cyclist@gmail.com" && password == "123456") {
+  if (storedEmail == null || storedPassword == null) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("No account found. Please create one.")),
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SignupScreen()),
+    );
+    return;
+  }
+
+  final emailNorm = email.trim().toLowerCase();
+  final passwordNorm = password.trim();
+
+  if (emailNorm == storedEmail && passwordNorm == storedPassword) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Login Successful")),
     );
-
-    Navigator.pushReplacementNamed(context, "/home");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const PedalPatrolHome()),
+    );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Invalid email or password")),
