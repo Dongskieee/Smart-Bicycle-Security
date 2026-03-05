@@ -36,7 +36,7 @@ class _HeaderState extends State<Header> {
             ? CircleAvatar(radius: 20, backgroundImage: FileImage(File(_avatarPath!)))
             : Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: primary.withOpacity(0.12), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(color: primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
                 child: Icon(Icons.directions_bike, color: primary, size: 28),
               ),
         const SizedBox(width: 12),

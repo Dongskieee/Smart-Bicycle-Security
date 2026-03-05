@@ -60,7 +60,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await prefs.setString('registered_name', _nameController.text.trim());
     await prefs.setString('registered_phone', _phoneController.text.trim());
     await prefs.setString('registered_bio', _bioController.text.trim());
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated')));
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated')));
+    }
   }
 
   @override

@@ -43,26 +43,32 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (storedEmail == null || storedPassword == null) {
       // No account exists yet — force the user to create one first.
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No account found. Please create one.")),
-      );
-      // Navigate to signup screen
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const SignupScreen()),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No account found. Please create one.")),
+        );
+        // Navigate to signup screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SignupScreen()),
+        );
+      }
       return;
     }
 
     if (email == storedEmail && password == storedPassword) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Invalid email or password")),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Invalid email or password")),
+        );
+      }
     }
   }
   @override

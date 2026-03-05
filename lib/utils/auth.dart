@@ -5,9 +5,11 @@ import '../screens/home_screen.dart';
 
 void loginUser(BuildContext context, String email, String password) async {
   if (email.isEmpty || password.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Please enter email and password")),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please enter email and password")),
+      );
+    });
     return;
   }
   final prefs = await SharedPreferences.getInstance();
@@ -15,13 +17,15 @@ void loginUser(BuildContext context, String email, String password) async {
   final storedPassword = prefs.getString('registered_password');
 
   if (storedEmail == null || storedPassword == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("No account found. Please create one.")),
-    );
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const SignupScreen()),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No account found. Please create one.")),
+      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const SignupScreen()),
+      );
+    });
     return;
   }
 
@@ -29,17 +33,21 @@ void loginUser(BuildContext context, String email, String password) async {
   final passwordNorm = password.trim();
 
   if (emailNorm == storedEmail && passwordNorm == storedPassword) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Login Successful")),
-    );
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login Successful")),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    });
   } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Invalid email or password")),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Invalid email or password")),
+      );
+    });
   }
 }
 
