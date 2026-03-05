@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'signup_screen.dart';
 import 'home_screen.dart';
+import 'dart:math';
+import 'package:emailjs/emailjs.dart' as emailjs;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -17,24 +19,49 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscure = true;
   bool _isLoading = false;
 
-  void loginUser() {
+  String generateOTP() {
+    Random random = Random();
+    int otp = 100000 + random.nextInt(900000);
+    return otp.toString();
+  }
+
+  Future<void> loginUser() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _isLoading = true);
-    _attemptLogin().whenComplete(() {
+
+    try {
+      String email = emailController.text.trim().toLowerCase();
+      String password = passwordController.text.trim();
+
+      final loginSuccess = await _attemptLogin(email, password);
+      if (!loginSuccess) return;
+
+      String otp = generateOTP();
+      await sendOTPEmail(email, otp);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login failed: $e")));
+    } finally {
       if (mounted) setState(() => _isLoading = false);
-    });
+    }
   }
 
-  Future<void> _attemptLogin() async {
-    String email = emailController.text.trim().toLowerCase();
-    String password = passwordController.text.trim();
-
+  Future<bool> _attemptLogin(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
+      if (!mounted) return false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please enter email and password")),
       );
-      return;
+      return false;
     }
 
     final prefs = await SharedPreferences.getInstance();
@@ -42,32 +69,52 @@ class _LoginScreenState extends State<LoginScreen> {
     final storedPassword = prefs.getString('registered_password');
 
     if (storedEmail == null || storedPassword == null) {
-      // No account exists yet — force the user to create one first.
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("No account found. Please create one.")),
         );
-        // Navigate to signup screen
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const SignupScreen()),
         );
       }
-      return;
+      return false;
     }
 
     if (email == storedEmail && password == storedPassword) {
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      }
+      return true;
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Invalid email or password")),
         );
+      }
+      return false;
+    }
+  }
+
+  Future<void> sendOTPEmail(String email, String otp) async {
+    try {
+      await emailjs.send(
+        'service_zktw00d', // replace with EmailJS service ID
+        'your_template_id', // replace with EmailJS template ID
+        {'to_email': email, 'otp': otp},
+        const emailjs.Options(
+          publicKey: 'PhvthuVJS0mXCpxG_', // ✔ this is allowed
+          // privateKey: 'YOUR_PRIVATE_KEY'  // optional
+        ), // replace with EmailJS user ID
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("OTP sent to $email")));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to send OTP: $e")));
       }
     }
   }
