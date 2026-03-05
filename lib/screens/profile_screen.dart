@@ -39,7 +39,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
-    final XFile? picked = await picker.pickImage(source: ImageSource.gallery, maxWidth: 800, maxHeight: 800, imageQuality: 85);
+    final XFile? picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 800,
+      maxHeight: 800,
+      imageQuality: 85,
+    );
     if (picked == null) return;
 
     final appDir = await getApplicationDocumentsDirectory();
@@ -61,7 +66,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await prefs.setString('registered_phone', _phoneController.text.trim());
     await prefs.setString('registered_bio', _bioController.text.trim());
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Profile updated')));
     }
   }
 
@@ -76,19 +83,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                    'Account',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 12),
                   Text('Email', style: TextStyle(color: Colors.grey.shade700)),
                   const SizedBox(height: 6),
-                  Text(_email, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text(
+                    _email,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 16),
                   Center(
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       children: [
                         _avatarPath != null && _avatarPath!.isNotEmpty
-                            ? CircleAvatar(radius: 48, backgroundImage: FileImage(File(_avatarPath!)))
-                            : const CircleAvatar(radius: 48, child: Icon(Icons.person, size: 40)),
+                            ? CircleAvatar(
+                                radius: 48,
+                                backgroundImage: FileImage(File(_avatarPath!)),
+                              )
+                            : const CircleAvatar(
+                                radius: 48,
+                                child: Icon(Icons.person, size: 40),
+                              ),
                         Positioned(
                           right: 0,
                           bottom: 0,
@@ -96,8 +115,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             onTap: _pickImage,
                             child: Container(
                               padding: const EdgeInsets.all(6),
-                              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle),
-                              child: const Icon(Icons.edit, color: Colors.white, size: 16),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 16,
+                              ),
                             ),
                           ),
                         ),
@@ -105,29 +131,57 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  const Text('Display name', style: TextStyle(color: Colors.grey)),
+                  const Text(
+                    'Display name',
+                    style: TextStyle(color: Colors.grey),
+                  ),
                   const SizedBox(height: 6),
-                  TextField(controller: _nameController, decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Your name')),
+                  TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Your name',
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   const Text('Phone', style: TextStyle(color: Colors.grey)),
                   const SizedBox(height: 6),
-                  TextField(controller: _phoneController, decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'Phone number'), keyboardType: TextInputType.phone),
+                  TextField(
+                    controller: _phoneController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Phone number',
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
                   const SizedBox(height: 12),
                   const Text('Bio', style: TextStyle(color: Colors.grey)),
                   const SizedBox(height: 6),
-                  TextField(controller: _bioController, decoration: const InputDecoration(border: OutlineInputBorder(), hintText: 'A short bio'), maxLines: 3),
+                  TextField(
+                    controller: _bioController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'A short bio',
+                    ),
+                    maxLines: 3,
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      ElevatedButton(onPressed: _saveProfile, child: const Text('Save')),
+                      ElevatedButton(
+                        onPressed: _saveProfile,
+                        child: const Text('Save'),
+                      ),
                       const SizedBox(width: 12),
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close')),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Close'),
+                      ),
                     ],
-                  )
+                  ),
                 ],
               ),
             ),
     );
   }
 }
-

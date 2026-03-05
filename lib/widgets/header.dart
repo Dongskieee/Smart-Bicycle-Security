@@ -33,10 +33,16 @@ class _HeaderState extends State<Header> {
     return Row(
       children: [
         _avatarPath != null && _avatarPath!.isNotEmpty
-            ? CircleAvatar(radius: 20, backgroundImage: FileImage(File(_avatarPath!)))
+            ? CircleAvatar(
+                radius: 20,
+                backgroundImage: FileImage(File(_avatarPath!)),
+              )
             : Container(
                 padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(color: primary.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+                decoration: BoxDecoration(
+                  color: primary.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 child: Icon(Icons.directions_bike, color: primary, size: 28),
               ),
         const SizedBox(width: 12),
@@ -45,14 +51,20 @@ class _HeaderState extends State<Header> {
           children: [
             Text(
               _name.isNotEmpty ? _name : 'PedalPatrol',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: primary),
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: primary,
+              ),
             ),
             const SizedBox(height: 2),
-            Text("Theft Alert System", style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+            Text(
+              "Theft Alert System",
+              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            ),
           ],
         ),
       ],
     );
   }
 }
-

@@ -16,9 +16,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await prefs.remove('registered_password');
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Account deleted.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Account deleted.')));
 
       Navigator.pushAndRemoveUntil(
         context,
@@ -37,22 +37,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Account', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text(
+              'Account',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 12),
             ListTile(
               leading: const Icon(Icons.delete_forever, color: Colors.red),
               title: const Text('Delete account'),
-              subtitle: const Text('Remove stored credentials from this device'),
+              subtitle: const Text(
+                'Remove stored credentials from this device',
+              ),
               onTap: () async {
                 // confirm
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder: (c) => AlertDialog(
                     title: const Text('Delete account?'),
-                    content: const Text('This will remove the stored account from this device.'),
+                    content: const Text(
+                      'This will remove the stored account from this device.',
+                    ),
                     actions: [
-                      TextButton(onPressed: () => Navigator.of(c).pop(false), child: const Text('Cancel')),
-                      TextButton(onPressed: () => Navigator.of(c).pop(true), child: const Text('Delete')),
+                      TextButton(
+                        onPressed: () => Navigator.of(c).pop(false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(c).pop(true),
+                        child: const Text('Delete'),
+                      ),
                     ],
                   ),
                 );
@@ -68,4 +81,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
-

@@ -60,7 +60,9 @@ class _SignupScreenState extends State<SignupScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
             child: Card(
               elevation: 8,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Form(
@@ -68,17 +70,32 @@ class _SignupScreenState extends State<SignupScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.person_add, size: 64, color: Colors.blue),
+                      const Icon(
+                        Icons.person_add,
+                        size: 64,
+                        color: Colors.blue,
+                      ),
                       const SizedBox(height: 12),
-                      const Text('Create Account', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Create Account',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 20),
 
                       TextFormField(
                         controller: emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(prefixIcon: Icon(Icons.email), labelText: 'Email', border: OutlineInputBorder()),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.email),
+                          labelText: 'Email',
+                          border: OutlineInputBorder(),
+                        ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty) return 'Email is required';
+                          if (v == null || v.trim().isEmpty)
+                            return 'Email is required';
                           if (!v.contains('@')) return 'Enter a valid email';
                           return null;
                         },
@@ -92,10 +109,19 @@ class _SignupScreenState extends State<SignupScreen> {
                           prefixIcon: const Icon(Icons.lock),
                           labelText: 'Password',
                           border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility), onPressed: () => setState(() => _obscure = !_obscure)),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscure
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                            ),
+                            onPressed: () =>
+                                setState(() => _obscure = !_obscure),
+                          ),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty) return 'Password is required';
+                          if (v == null || v.trim().isEmpty)
+                            return 'Password is required';
                           if (v.length < 4) return 'Password too short';
                           return null;
                         },
@@ -105,10 +131,16 @@ class _SignupScreenState extends State<SignupScreen> {
                       TextFormField(
                         controller: confirmController,
                         obscureText: _obscure,
-                        decoration: const InputDecoration(prefixIcon: Icon(Icons.lock_outline), labelText: 'Confirm Password', border: OutlineInputBorder()),
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.lock_outline),
+                          labelText: 'Confirm Password',
+                          border: OutlineInputBorder(),
+                        ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty) return 'Please confirm your password';
-                          if (v != passwordController.text) return 'Passwords do not match';
+                          if (v == null || v.trim().isEmpty)
+                            return 'Please confirm your password';
+                          if (v != passwordController.text)
+                            return 'Passwords do not match';
                           return null;
                         },
                       ),
@@ -118,12 +150,29 @@ class _SignupScreenState extends State<SignupScreen> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _createAccount,
-                          style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                          child: _isLoading ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Text('Create Account'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const SizedBox(
+                                  height: 18,
+                                  width: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text('Create Account'),
                         ),
                       ),
                       const SizedBox(height: 8),
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Back to Login')),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Back to Login'),
+                      ),
                     ],
                   ),
                 ),
@@ -135,4 +184,3 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 }
-

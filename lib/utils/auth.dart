@@ -34,9 +34,9 @@ void loginUser(BuildContext context, String email, String password) async {
 
   if (emailNorm == storedEmail && passwordNorm == storedPassword) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login Successful")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Login Successful")));
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -50,4 +50,3 @@ void loginUser(BuildContext context, String email, String password) async {
     });
   }
 }
-
