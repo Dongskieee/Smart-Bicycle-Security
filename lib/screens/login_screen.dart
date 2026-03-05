@@ -123,8 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           border: OutlineInputBorder(),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'Email is required';
+                          }
                           if (!v.contains('@')) return 'Enter a valid email';
                           return null;
                         },
@@ -149,8 +150,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'Password is required';
+                          }
                           if (v.length < 4) return 'Password too short';
                           return null;
                         },

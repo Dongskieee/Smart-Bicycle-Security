@@ -94,8 +94,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           border: OutlineInputBorder(),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'Email is required';
+                          }
                           if (!v.contains('@')) return 'Enter a valid email';
                           return null;
                         },
@@ -120,8 +121,9 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'Password is required';
+                          }
                           if (v.length < 4) return 'Password too short';
                           return null;
                         },
@@ -137,10 +139,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           border: OutlineInputBorder(),
                         ),
                         validator: (v) {
-                          if (v == null || v.trim().isEmpty)
+                          if (v == null || v.trim().isEmpty) {
                             return 'Please confirm your password';
-                          if (v != passwordController.text)
+                          }
+                          if (v != passwordController.text) {
                             return 'Passwords do not match';
+                          }
                           return null;
                         },
                       ),
