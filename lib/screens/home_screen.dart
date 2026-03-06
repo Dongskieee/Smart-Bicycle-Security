@@ -3,6 +3,8 @@ import '../widgets/header.dart';
 import '../widgets/account_menu.dart';
 import '../widgets/alert_card.dart';
 import '../widgets/location_card.dart';
+import 'dashboard_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,10 +17,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = const [
+    DashboardScreen(),
     GpsScreen(),
     AlertsScreen(),
-    HistoryScreen(),
-    RidesScreen(),
+    ProfileScreen(),
   ];
 
   @override
@@ -39,10 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.grey.shade600,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.gps_fixed), label: "GPS"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.location_on), label: "Location"),
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Alerts"),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "History"),
-          BottomNavigationBarItem(icon: Icon(Icons.directions_bike), label: "Rides"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
@@ -58,7 +60,7 @@ class GpsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PedalPatrol'),
+        title: const Text('Location Tracking'),
         actions: const [AccountMenu()],
       ),
       backgroundColor: Colors.white,
@@ -87,7 +89,7 @@ class AlertsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('PedalPatrol'),
+        title: const Text('Security Alerts'),
         actions: const [AccountMenu()],
       ),
       backgroundColor: Colors.white,

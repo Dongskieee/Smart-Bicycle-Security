@@ -46,44 +46,57 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFF4A90E2), Color(0xFF50C9CE)],
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
-            child: Card(
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Padding(
+      backgroundColor: primaryColor,
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+          child: Card(
+            elevation: 8,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.person_add,
-                        size: 64,
-                        color: Colors.blue,
+                      // PedalPatrol Logo
+                      Image.asset(
+                        'assets/images/PedalPatrolLogo.png',
+                        width: 110,
+                        height: 110,
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.person_add,
+                            size: 70,
+                            color: Theme.of(context).colorScheme.primary,
+                          );
+                        },
                       ),
-                      const SizedBox(height: 12),
-                      const Text(
+                      const SizedBox(height: 18),
+                      Text(
                         'Create Account',
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Join PedalPatrol Security',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
 
                       TextFormField(
                         controller: emailController,
@@ -184,7 +197,6 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }

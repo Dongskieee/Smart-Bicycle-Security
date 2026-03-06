@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,7 +10,6 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> {
   String _name = '';
-  String? _avatarPath;
 
   @override
   void initState() {
@@ -23,28 +21,34 @@ class _HeaderState extends State<Header> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _name = prefs.getString('registered_name') ?? '';
-      _avatarPath = prefs.getString('registered_avatar');
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final primary = Theme.of(context).colorScheme.primary;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final accentColor = Theme.of(context).colorScheme.secondary;
+    
     return Row(
       children: [
-        _avatarPath != null && _avatarPath!.isNotEmpty
-            ? CircleAvatar(
-                radius: 20,
-                backgroundImage: FileImage(File(_avatarPath!)),
-              )
-            : Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: primary.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(Icons.directions_bike, color: primary, size: 28),
-              ),
+        // App Logo - No white container
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.asset(
+            'assets/images/PedalPatrolLogo.png',
+            width: 50,
+            height: 50,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              // Fallback icon
+              return Icon(
+                Icons.pedal_bike,
+                size: 40,
+                color: primaryColor,
+              );
+            },
+          ),
+        ),
         const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,13 +58,22 @@ class _HeaderState extends State<Header> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: primary,
+                color: primaryColor,
               ),
             ),
             const SizedBox(height: 2),
-            Text(
-              "Theft Alert System",
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+            Row(
+              children: [
+                Icon(Icons.security, size: 12, color: accentColor),
+                const SizedBox(width: 4),
+                Text(
+                  "Theft Alert System",
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

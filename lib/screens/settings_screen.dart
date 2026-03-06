@@ -30,6 +30,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
       body: Padding(
@@ -37,18 +39,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Account',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: primaryColor,
+              ),
             ),
             const SizedBox(height: 12),
-            ListTile(
-              leading: const Icon(Icons.delete_forever, color: Colors.red),
-              title: const Text('Delete account'),
-              subtitle: const Text(
-                'Remove stored credentials from this device',
-              ),
-              onTap: () async {
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.delete_forever, color: Colors.red),
+                title: const Text('Delete account'),
+                subtitle: const Text(
+                  'Remove stored credentials from this device',
+                ),
+                onTap: () async {
                 // confirm
                 final confirm = await showDialog<bool>(
                   context: context,
@@ -74,6 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   await _deleteAccount();
                 }
               },
+              ),
             ),
           ],
         ),
