@@ -15,7 +15,9 @@ class AccountMenu extends StatelessWidget {
           // On logout, return to login and clear navigation stack
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(email: ''),
+            ),
             (route) => false,
           );
         } else if (value == 'profile') {
@@ -38,4 +40,3 @@ class AccountMenu extends StatelessWidget {
     );
   }
 }
-

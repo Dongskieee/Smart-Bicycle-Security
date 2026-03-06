@@ -127,4 +127,3 @@ class PedalPatrolApp extends StatelessWidget {
     );
   }
 }
-
