@@ -17,9 +17,17 @@ class PedalPatrolApp extends StatelessWidget {
         useMaterial3: false,
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.grey.shade50,
-        appBarTheme: const AppBarTheme(elevation: 2, backgroundColor: Colors.white, foregroundColor: Colors.black),
+        appBarTheme: const AppBarTheme(
+          elevation: 2,
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+        ),
         elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+          style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
         ),
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
@@ -28,8 +36,7 @@ class PedalPatrolApp extends StatelessWidget {
           titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
-      home: const LoginScreen(),
+      home: const LoginScreen(email: ''),
     );
   }
 }
-
