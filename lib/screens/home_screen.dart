@@ -4,7 +4,7 @@ import '../widgets/account_menu.dart';
 import '../widgets/alert_card.dart';
 import '../widgets/location_card.dart';
 import 'dashboard_screen.dart';
-import 'profile_screen.dart';
+import 'rides_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
     DashboardScreen(),
     GpsScreen(),
     AlertsScreen(),
-    ProfileScreen(),
+    RidesScreen(),
   ];
 
   @override
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.location_on), label: "Location"),
           BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Alerts"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.directions_bike), label: "Rides"),
         ],
       ),
     );
@@ -60,6 +60,19 @@ class GpsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/PedalPatrolLogo.png',
+            width: 40,
+            height: 40,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.pedal_bike);
+            },
+          ),
+        ),
         title: const Text('Location Tracking'),
         actions: const [AccountMenu()],
       ),
@@ -69,8 +82,6 @@ class GpsScreen extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: const [
-              Header(),
-              SizedBox(height: 20),
               AlertCard(),
               SizedBox(height: 20),
               LocationCard(),
@@ -89,6 +100,19 @@ class AlertsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/PedalPatrolLogo.png',
+            width: 40,
+            height: 40,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.pedal_bike);
+            },
+          ),
+        ),
         title: const Text('Security Alerts'),
         actions: const [AccountMenu()],
       ),
@@ -99,7 +123,6 @@ class AlertsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Header(),
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(16),

@@ -29,9 +29,6 @@ class DashboardScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Header(),
-              const SizedBox(height: 20),
-              
               // Security Status Card
               const SecurityStatusCard(),
               const SizedBox(height: 16),

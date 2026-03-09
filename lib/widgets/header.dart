@@ -28,28 +28,10 @@ class _HeaderState extends State<Header> {
   Widget build(BuildContext context) {
     final primaryColor = Theme.of(context).colorScheme.primary;
     final accentColor = Theme.of(context).colorScheme.secondary;
-    
     return Row(
       children: [
-        // App Logo - No white container
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.asset(
-            'assets/images/PedalPatrolLogo.png',
-            width: 50,
-            height: 50,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) {
-              // Fallback icon
-              return Icon(
-                Icons.pedal_bike,
-                size: 40,
-                color: primaryColor,
-              );
-            },
-          ),
-        ),
-        const SizedBox(width: 12),
+        // Removed App Logo
+        // const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

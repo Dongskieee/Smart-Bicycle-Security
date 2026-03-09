@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:emailjs/emailjs.dart' as emailjs;
 import 'signup_screen.dart';
 import 'admin/admin_login_screen.dart';
+import 'admin/admin_home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final String? email;
@@ -78,6 +79,18 @@ class _LoginScreenState extends State<LoginScreen> {
       String email = emailController.text.trim().toLowerCase();
       String password = passwordController.text.trim();
 
+      // Admin login logic
+      if (email == "admin@pedalpatrol.com" && password == "admin123") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AdminHomeScreen(),
+          ),
+        );
+        setState(() => _isLoading = false);
+        return;
+      }
+
       final loginSuccess = await _attemptLogin(email, password);
       if (!loginSuccess) return;
 
@@ -93,11 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomeScreen(
-            // email: email,
-            //otp: otp,
-            //otpGeneratedTime: DateTime.now(),
-          ),
+          builder: (context) => HomeScreen(),
         ),
       );
     } catch (e) {
@@ -123,19 +132,6 @@ class _LoginScreenState extends State<LoginScreen> {
     final prefs = await SharedPreferences.getInstance();
     final storedEmail = prefs.getString('registered_email');
     final storedPassword = prefs.getString('registered_password');
-
-    if (storedEmail == null || storedPassword == null) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No account found. Please create one.")),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const SignupScreen()),
-        );
-      }
-      return false;
-    }
 
     if (email == storedEmail && password == storedPassword) {
       return true;
@@ -285,37 +281,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: const Text('Create account'),
                           ),
                         ],
-                      ),
-                      
-                      const SizedBox(height: 8),
-                      const Divider(),
-                      const SizedBox(height: 8),
-                      
-                      // Admin Login Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const AdminLoginScreen(),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.admin_panel_settings),
-                          label: const Text('Admin Login'),
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            side: BorderSide(
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                            foregroundColor: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
                       ),
                     ],
                   ),

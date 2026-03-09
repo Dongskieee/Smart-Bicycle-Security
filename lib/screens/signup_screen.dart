@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'home_screen.dart';
+import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -36,10 +37,10 @@ class _SignupScreenState extends State<SignupScreen> {
         const SnackBar(content: Text('Account created successfully')),
       );
 
-      // Navigate to home
+      // Navigate to login screen after account creation
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }
   }
